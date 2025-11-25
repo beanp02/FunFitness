@@ -1,0 +1,11 @@
+Issues-
+
+Enhancement-
+1. ability to edit all workouts on the day in text form
+
+Future
+1. Add login page
+2. Add user account page
+3. Add selection for user at top
+4. Light and dark mode
+5. Export information to csv or txt

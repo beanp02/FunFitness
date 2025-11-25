@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fun Fitness Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Fit & Funny</h1>
+            <p>Log it before you regret it.</p>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
+                <button id="history-btn" class="secondary-btn">📅 View History</button>
+                <button id="finish-day-btn" class="primary-btn">✅ Finish Day</button>
+            </div>
+        </header>
+
+        <div id="editing-banner" class="banner hidden">
+            <span>Editing: <span id="editing-date"></span></span>
+            <button id="exit-edit-btn" class="small-btn">Exit</button>
+        </div>
+
+        <!-- User Settings -->
+        <section class="card settings">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h2>Your Stats</h2>
+                <button id="edit-stats-btn" class="icon-btn" title="Edit Stats">✏️</button>
+            </div>
+            <div class="input-group">
+                <label for="user-weight" class="label">Weight (kg):</label>
+                <input type="number" id="user-weight" placeholder="" disabled style="width: 80px;">
+                <label for="calorie-goal" class="label">Goal:</label>
+                <input type="number" id="calorie-goal" placeholder="" disabled style="width: 80px;">
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section class="card summary">
+            <h2>Daily Summary</h2>
+            <div class="summary-grid">
+                <div class="stat-box">
+                    <div class="value" id="calories-in">0</div>
+                    <div class="label">In (Food)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="calories-out">0</div>
+                    <div class="label">Out (Workout)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="net-calories">0</div>
+                    <div class="label">Net Calories</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="water-summary">0L</div>
+                    <div class="label">Water (Goal 3L)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Judgement Zone -->
+        <section class="card judgement-zone">
+            <h2>The Judgement Zone</h2>
+            <div id="judgement-content">
+                <p class="snark-text">Start logging to get judged.</p>
+                <div class="meme-container" id="meme-display"></div>
+            </div>
+        </section>
+
+        <!-- Water Tracker -->
+        <section class="card">
+            <h3>💧 Water Tracker</h3>
+            <div class="water-container" id="water-tracker">
+                <!-- Bottles injected by JS -->
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; color: var(--text-muted); margin-top: 10px;">Click to drink
+                (500ml each)</p>
+        </section>
+
+        <!-- Food Log -->
+        <section class="card">
+            <h3>🍔 Food Log</h3>
+            <div class="input-group column-group">
+                <select id="food-select">
+                    <option value="custom">Custom Entry</option>
+                    <!-- Populated by JS -->
+                </select>
+                <div id="food-custom-inputs" class="input-row hidden">
+                    <input type="text" id="food-name" placeholder="Food Name">
+                    <input type="number" id="food-cals" placeholder="Cals per unit">
+                    <label
+                        style="display: flex; align-items: center; gap: 5px; font-size: 0.9rem; color: var(--text-muted);">
+                        <input type="checkbox" id="save-custom-food"> Save to Menu
+                    </label>
+                </div>
+                <div class="input-row">
+                    <input type="number" id="food-qty" placeholder="Quantity" value="1">
+                    <button id="add-food-btn">Add Food</button>
+                </div>
+            </div>
+            <ul class="log-list" id="food-list"></ul>
+        </section>
+
+        <!-- Workout Log -->
+        <section class="card">
+            <h3>💪 Workout Log</h3>
+            <div class="input-group column-group">
+                <select id="workout-type">
+                    <option value="cardio">Cardio</option>
+                    <option value="strength">Strength Training</option>
+                </select>
+
+                <input type="text" id="workout-name" placeholder="Exercise Name (e.g. Running, Bench Press)">
+
+                <!-- Cardio Inputs -->
+                <div id="cardio-inputs" class="input-row">
+                    <input type="number" id="cardio-time" placeholder="Time (mins)">
+                    <input type="number" id="cardio-speed" placeholder="Speed (km/h)">
+                    <input type="number" id="cardio-incline" placeholder="Incline (%)">
+                </div>
+
+                <!-- Strength Inputs -->
+                <div id="strength-inputs" class="input-row hidden">
+                    <input type="number" id="strength-sets" placeholder="Sets" style="flex: 1; min-width: 60px;">
+                    <input type="number" id="strength-reps" placeholder="Reps" style="flex: 1; min-width: 60px;">
+                    <input type="number" id="strength-weight" placeholder="Weight (kg)"
+                        style="flex: 1; min-width: 80px;">
+                    <select id="strength-effort" style="flex: 1; min-width: 100px;">
+                        <option value="low">Low Effort</option>
+                        <option value="medium" selected>Medium Effort</option>
+                        <option value="high">High Effort</option>
+                        <option value="max">Max Effort</option>
+                    </select>
+                </div>
+
+                <button id="add-workout-btn">Add Workout</button>
+            </div>
+            <ul class="log-list" id="workout-list"></ul>
+        </section>
+
+        <!-- Motivation Station -->
+        <section class="card motivation">
+            <h3>🚀 Motivation Station</h3>
+            <p id="motivation-text">Keep pushing! You got this.</p>
+        </section>
+        <footer style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;">
+            <p>Fun Fitness Tracker &copy; 2025 - Version 1.0</p>
+        </footer>
+    </div>
+
+    <!-- History Modal -->
+    <div id="history-modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="close-history" class="close">&times;</span>
+            <h2>History</h2>
+            <div id="history-list"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
