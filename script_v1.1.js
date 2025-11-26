@@ -667,7 +667,12 @@ function renderLists() {
         </li>
     `).join('');
 
-    els.workoutList.innerHTML = state.workouts.map((item, index) => `
+    // Filter out 0-calorie workouts before rendering
+    const validWorkouts = state.workouts.filter(w => w.cals > 0);
+    els.workoutList.innerHTML = validWorkouts.map((item, originalIndex) => {
+        // Find the original index in state.workouts for deletion
+        const index = state.workouts.indexOf(item);
+        return `
         <li class="log-item">
             <div>
                 <div>${item.name}</div>
@@ -679,7 +684,7 @@ function renderLists() {
                 <button class="delete-btn" onclick="window.deleteWorkout(${index})">&times;</button>
             </div>
         </li>
-    `).join('');
+    `}).join('');
 }
 
 function renderWater() {
@@ -907,14 +912,20 @@ function saveBulkWorkout() {
             }
         }
 
-        // Fallback
-        newWorkouts.push({ name: line, cals: 0, details: line, raw: {} });
+        // Fallback - skip invalid entries
+        console.warn(`Could not parse workout: "${line}"`);
+    }
+
+    if (newWorkouts.length === 0) {
+        alert('No valid workouts found. Please check the format and try again.');
+        return;
     }
 
     state.workouts = newWorkouts;
     updateUI();
     triggerJudgement('workout');
 
-    // Switch back
+    // Clear input and switch back
+    els.workoutBulkInput.value = '';
     toggleBulkWorkoutMode();
 }
