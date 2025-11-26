@@ -1,4 +1,4 @@
-// Fun Fitness Tracker - Version 1.0
+// Fun Fitness Tracker - Version 1.1
 // Inline Data
 const memes = {
     good: [
@@ -172,28 +172,32 @@ function loadData() {
     };
 
     if (stored) {
-        const data = JSON.parse(stored);
+        try {
+            const data = JSON.parse(stored);
 
-        // Load custom foods globally from the latest entry
-        const lastDayKey = Object.keys(data).sort().pop();
-        if (lastDayKey && data[lastDayKey].customFoods) {
-            state.customFoods = data[lastDayKey].customFoods;
-            foodDB = { ...foodDB, ...state.customFoods };
-        }
-
-        if (data[currentDate]) {
-            state = data[currentDate];
-            if (state.customFoods) {
+            // Load custom foods globally from the latest entry
+            const lastDayKey = Object.keys(data).sort().pop();
+            if (lastDayKey && data[lastDayKey].customFoods) {
+                state.customFoods = data[lastDayKey].customFoods;
                 foodDB = { ...foodDB, ...state.customFoods };
             }
-        } else if (currentDate === getTodayStr()) {
-            // New day - carry over stats
-            if (lastDayKey) {
-                state.weight = data[lastDayKey].weight;
-                state.goal = data[lastDayKey].goal;
-                state.customFoods = data[lastDayKey].customFoods || {};
-                foodDB = { ...foodDB, ...state.customFoods };
+
+            if (data[currentDate]) {
+                state = data[currentDate];
+                if (state.customFoods) {
+                    foodDB = { ...foodDB, ...state.customFoods };
+                }
+            } else if (currentDate === getTodayStr()) {
+                // New day - carry over stats
+                if (lastDayKey) {
+                    state.weight = data[lastDayKey].weight;
+                    state.goal = data[lastDayKey].goal;
+                    state.customFoods = data[lastDayKey].customFoods || {};
+                    foodDB = { ...foodDB, ...state.customFoods };
+                }
             }
+        } catch (e) {
+            console.error("Failed to load data", e);
         }
     }
 
@@ -306,8 +310,6 @@ function setupEventListeners() {
     if (els.saveBulkWorkoutBtn) {
         els.saveBulkWorkoutBtn.addEventListener('click', saveBulkWorkout);
     }
-    els.exitEditBtn.addEventListener('click', exitEditMode);
-}
 }
 
 // Actions
@@ -739,8 +741,13 @@ function renderHistory() {
 
     html += days.map(day => {
         const dayData = data[day];
-        const totalIn = dayData.food.reduce((acc, item) => acc + item.cals, 0);
-        const totalOut = dayData.workouts.reduce((acc, item) => acc + item.cals, 0);
+        if (!dayData) return ''; // Safety check
+
+        const food = dayData.food || [];
+        const workouts = dayData.workouts || [];
+
+        const totalIn = food.reduce((acc, item) => acc + (item.cals || 0), 0);
+        const totalOut = workouts.reduce((acc, item) => acc + (item.cals || 0), 0);
         const net = totalIn - totalOut;
         const goal = dayData.goal || 2000;
         const water = dayData.water || 0;
@@ -792,3 +799,122 @@ function renderHistory() {
 }
 
 init();
+
+// v1.1 Features Logic
+
+function updateDateTime() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    if (els.datetimeDisplay) {
+        els.datetimeDisplay.textContent = now.toLocaleDateString(undefined, options);
+    }
+}
+
+function checkDate() {
+    const newDate = getTodayStr();
+    if (newDate !== currentDate) {
+        // Day changed
+        currentDate = newDate;
+        loadData(); // This handles resetting state for new day
+        updateUI();
+        // Reset view to main if in history
+        els.historyModal.classList.add('hidden');
+        els.editingBanner.classList.add('hidden');
+    }
+}
+
+function toggleBulkWorkoutMode() {
+    const isBulk = !els.workoutBulkContainer.classList.contains('hidden');
+
+    if (isBulk) {
+        // Switch to Single
+        els.workoutBulkContainer.classList.add('hidden');
+        els.workoutSingleContainer.classList.remove('hidden');
+        els.toggleBulkWorkoutBtn.textContent = 'Switch to Bulk Mode';
+    } else {
+        // Switch to Bulk
+        // Populate textarea with current workouts
+        const text = state.workouts.map(w => w.name + ': ' + w.details).join('\n');
+        els.workoutBulkInput.value = text;
+
+        els.workoutBulkContainer.classList.remove('hidden');
+        els.workoutSingleContainer.classList.add('hidden');
+        els.toggleBulkWorkoutBtn.textContent = 'Switch to Single Mode';
+    }
+}
+
+function saveBulkWorkout() {
+    if (state.completed) return;
+
+    const text = els.workoutBulkInput.value;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+    const newWorkouts = [];
+
+    for (const line of lines) {
+        let data = null;
+        let cals = 0;
+        let name = 'Unknown Workout';
+        let details = line;
+
+        // Try to parse 'Name: Details'
+        const parts = line.split(':');
+        if (parts.length >= 2) {
+            name = parts[0].trim();
+            details = parts.slice(1).join(':').trim();
+
+            if (details.includes('sets x')) {
+                const match = details.match(/(\d+) sets x (\d+) reps @ ([\d.]+)kg \((.*) effort\)/);
+                if (match) {
+                    const sets = parseInt(match[1]);
+                    const reps = parseInt(match[2]);
+                    const weight = parseFloat(match[3]);
+                    const effort = match[4];
+
+                    let met = 3.5;
+                    if (effort === 'medium') met = 5.0;
+                    if (effort === 'high') met = 6.0;
+                    if (effort === 'max') met = 8.0;
+
+                    const estimatedTimeMins = sets * 3;
+                    const userWeight = state.weight || 70;
+                    cals = Math.round(met * userWeight * (estimatedTimeMins / 60));
+
+                    data = { type: 'strength', name, sets, reps, weight, effort };
+                    newWorkouts.push({ name, cals, details, raw: data });
+                    continue;
+                }
+            } else if (details.includes('mins @')) {
+                const match = details.match(/([\d.]+) mins @ ([\d.]+)km\/h, ([\d.]+)% incline/);
+                if (match) {
+                    const time = parseFloat(match[1]);
+                    const speed = parseFloat(match[2]);
+                    const incline = parseFloat(match[3]);
+
+                    let met = 0;
+                    if (speed < 5) met = 3.5;
+                    else if (speed < 8) met = 8;
+                    else met = 11.5;
+                    met += incline * 0.1;
+
+                    const weight = state.weight || 70;
+                    cals = Math.round(met * weight * (time / 60));
+
+                    data = { type: 'cardio', name, time, speed, incline };
+                    newWorkouts.push({ name, cals, details, raw: data });
+                    continue;
+                }
+            }
+        }
+
+        // Fallback
+        newWorkouts.push({ name: line, cals: 0, details: line, raw: {} });
+    }
+
+    state.workouts = newWorkouts;
+    updateUI();
+    triggerJudgement('workout');
+
+    // Switch back
+    toggleBulkWorkoutMode();
+}

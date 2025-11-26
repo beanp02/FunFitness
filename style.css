@@ -1,4 +1,4 @@
-/* Fun Fitness Tracker - Version 1.0 */
+/* Fun Fitness Tracker - Version 1.1 */
 :root {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
@@ -48,6 +48,89 @@ h3 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 10px;
+}
+
+/* Global Input & Button Styles */
+input,
+select,
+textarea {
+    background-color: #2c2c2c;
+    color: white;
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: var(--font-family);
+    font-size: 1rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+textarea {
+    width: 100%;
+    min-height: 200px;
+    resize: vertical;
+    font-family: monospace;
+}
+
+button {
+    font-family: var(--font-family);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Primary Button */
+.primary-btn {
+    background-color: var(--primary);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Secondary Button */
+.secondary-btn {
+    background-color: transparent;
+    border: 1px solid var(--secondary);
+    color: var(--secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.secondary-btn:hover:not(:disabled) {
+    background-color: var(--secondary);
+    color: #000;
+}
+
+/* Small Button */
+.small-btn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: inherit;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.small-btn:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .card {
@@ -101,58 +184,10 @@ h3 {
     display: none !important;
 }
 
-select {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-family: var(--font-family);
-    font-size: 1rem;
-    background-color: #2c2c2c;
-    color: white;
-    cursor: pointer;
-}
-
-select:focus {
-    outline: 2px solid var(--primary);
-}
-
-input,
-button {
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-family: var(--font-family);
-    font-size: 1rem;
-}
-
-input {
-    background-color: #2c2c2c;
-    color: white;
-    flex-grow: 1;
-}
-
-input:focus {
-    outline: 2px solid var(--primary);
-}
-
-button {
-    background-color: var(--primary);
-    color: #000;
-    font-weight: bold;
-    cursor: pointer;
-    transition: opacity 0.2s;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
 .log-list {
     list-style: none;
     padding: 0;
-    margin-top: 15px;
-    max-height: 200px;
-    overflow-y: auto;
+    margin: 10px 0 0 0;
 }
 
 .log-item {
@@ -161,13 +196,11 @@ button:hover {
     padding: 10px;
     border-bottom: 1px solid #333;
     animation: slideIn 0.3s ease-out;
-    flex-direction: column;
 }
 
 .log-item span:last-child {
     color: var(--secondary);
     font-weight: bold;
-    align-self: flex-end;
 }
 
 .log-details {
@@ -187,53 +220,10 @@ button:hover {
     }
 }
 
-.judgement-zone {
-    text-align: center;
-    border: 2px solid var(--primary);
-}
-
-.meme-container img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-.snark-text {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 10px;
-    color: var(--secondary);
-}
-
-.motivation {
-    text-align: center;
-    border-top: 2px solid var(--secondary);
-}
-
-#motivation-text {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-.secondary-btn {
-    background-color: transparent;
-    border: 1px solid var(--secondary);
-    color: var(--secondary);
-    padding: 8px 16px;
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
-.secondary-btn:hover {
-    background-color: var(--secondary);
-    color: #000;
-}
-
 /* Modal */
 .modal {
     position: fixed;
-    z-index: 100;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
@@ -262,6 +252,11 @@ button:hover {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    color: var(--text-main);
+}
+
+.close:hover {
+    color: var(--error);
 }
 
 .history-day {
@@ -317,202 +312,7 @@ button:hover {
     font-weight: bold;
 }
 
-.danger-btn:hover {
-    opacity: 0.9;
-}
-
-/* Water Tracker */
-.water-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-}
-
-.water-bottle {
-    width: 40px;
-    height: 60px;
-    border: 2px solid var(--secondary);
-    border-radius: 5px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: transparent;
-}
-
-.water-bottle::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 15px;
-}
-
-.log-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #333;
-    animation: slideIn 0.3s ease-out;
-    flex-direction: column;
-}
-
-.log-item span:last-child {
-    color: var(--secondary);
-    font-weight: bold;
-    align-self: flex-end;
-}
-
-.log-details {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.judgement-zone {
-    text-align: center;
-    border: 2px solid var(--primary);
-}
-
-.meme-container img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-.snark-text {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 10px;
-    color: var(--secondary);
-}
-
-.motivation {
-    text-align: center;
-    border-top: 2px solid var(--secondary);
-}
-
-#motivation-text {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-.secondary-btn {
-    background-color: transparent;
-    border: 1px solid var(--secondary);
-    color: var(--secondary);
-    padding: 8px 16px;
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
-.secondary-btn:hover {
-    background-color: var(--secondary);
-    color: #000;
-}
-
-/* Modal */
-.modal {
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.history-day {
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
-}
-
-.history-day h4 {
-    color: var(--primary);
-    margin-bottom: 5px;
-}
-
-.rating-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.rating-good {
-    background-color: var(--secondary);
-    color: #000;
-}
-
-.rating-bad {
-    background-color: var(--error);
-    color: #fff;
-}
-
-.delete-btn {
-    background: none;
-    border: none;
-    color: var(--error);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 5px;
-    line-height: 1;
-}
-
-.delete-btn:hover {
-    color: #ff4444;
-}
-
-.danger-btn {
-    background-color: var(--error);
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.danger-btn:hover {
+.danger-btn:hover:not(:disabled) {
     opacity: 0.9;
 }
 
@@ -564,206 +364,43 @@ button:hover {
     transition: background-color 0.2s;
 }
 
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.judgement-zone {
-    text-align: center;
-    border: 2px solid var(--primary);
-}
-
-.meme-container img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-top: 10px;
-}
-
-.snark-text {
-    font-size: 1.2rem;
-    font-style: italic;
-    margin-bottom: 10px;
-    color: var(--secondary);
-}
-
-.motivation {
-    text-align: center;
-    border-top: 2px solid var(--secondary);
-}
-
-#motivation-text {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-.secondary-btn {
-    background-color: transparent;
-    border: 1px solid var(--secondary);
-    color: var(--secondary);
-    padding: 8px 16px;
-    margin-top: 10px;
-    font-size: 0.9rem;
-}
-
-.secondary-btn:hover {
-    background-color: var(--secondary);
-    color: #000;
-}
-
-/* Modal */
-.modal {
-    position: fixed;
-    z-index: 100;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.history-day {
-    border-bottom: 1px solid #333;
-    padding: 10px 0;
-}
-
-.history-day h4 {
-    color: var(--primary);
-    margin-bottom: 5px;
-}
-
-.rating-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.rating-good {
-    background-color: var(--secondary);
-    color: #000;
-}
-
-.rating-bad {
-    background-color: var(--error);
-    color: #fff;
-}
-
-.delete-btn {
-    background: none;
-    border: none;
-    color: var(--error);
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0 5px;
-    line-height: 1;
-}
-
-.delete-btn:hover {
-    color: #ff4444;
-}
-
-.danger-btn {
-    background-color: var(--error);
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.danger-btn:hover {
-    opacity: 0.9;
-}
-
-/* Water Tracker */
-.water-container {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 15px;
-    flex-wrap: wrap;
-}
-
-.water-bottle {
-    width: 40px;
-    height: 60px;
-    border: 2px solid var(--secondary);
-    border-radius: 5px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: transparent;
-}
-
-.water-bottle::before {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 15px;
-    height: 8px;
-    background-color: var(--secondary);
-    border-radius: 2px;
-}
-
-.water-bottle.drunk {
-    background-color: var(--secondary);
-    box-shadow: 0 0 10px var(--secondary);
-}
-
-/* Icon Button */
-.icon-btn {
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 5px;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.icon-btn:hover {
+.icon-btn:hover:not(:disabled) {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
+.judgement-zone {
+    text-align: center;
+    border: 2px solid var(--primary);
+}
+
+.meme-container img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.snark-text {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 10px;
+    color: var(--secondary);
+}
+
+.motivation {
+    text-align: center;
+    border-top: 2px solid var(--secondary);
+}
+
+#motivation-text {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
 /* Disabled Inputs */
-input:disabled {
+input:disabled,
+select:disabled,
+textarea:disabled {
     background-color: transparent;
     border: 1px solid #444;
     color: var(--text-muted);
@@ -772,34 +409,30 @@ input:disabled {
 
 /* Editing Banner */
 .banner {
-    background-color: var(--accent);
-    color: var(--bg-dark);
+    background-color: var(--primary);
+    color: #000;
     padding: 10px;
     border-radius: 8px;
-    margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
 }
 
-.small-btn {
-    background: rgba(0, 0, 0, 0.2);
-    border: none;
-    color: inherit;
-    padding: 5px 10px;
+/* Info Box */
+.info-box {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left: 3px solid var(--secondary);
+    padding: 10px;
+    margin-bottom: 10px;
     border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
 }
 
-.small-btn:hover {
-    background: rgba(0, 0, 0, 0.4);
+.info-box p {
+    margin: 5px 0;
 }
 
-/* Disabled State for Finished Days */
-.disabled-overlay {
-    pointer-events: none;
-    opacity: 0.6;
-    filter: grayscale(0.5);
+.info-box strong {
+    color: var(--text-main);
 }

@@ -16,6 +16,8 @@
         <header class="header">
             <h1>Fit & Funny</h1>
             <p>Log it before you regret it.</p>
+            <div id="datetime-display"
+                style="font-size: 1.1rem; font-weight: bold; color: var(--primary); margin: 5px 0;"></div>
             <div style="display: flex; gap: 10px; justify-content: center; margin-top: 10px;">
                 <button id="history-btn" class="secondary-btn">📅 View History</button>
                 <button id="finish-day-btn" class="primary-btn">✅ Finish Day</button>
@@ -101,47 +103,98 @@
                 </div>
                 <div class="input-row">
                     <input type="number" id="food-qty" placeholder="Quantity" value="1">
-                    <button id="add-food-btn">Add Food</button>
+                    <button id="add-food-btn" class="primary-btn">Add Food</button>
                 </div>
             </div>
-            <ul class="log-list" id="food-list"></ul>
+            <ul id="food-list" class="log-list"></ul>
         </section>
 
         <!-- Workout Log -->
         <section class="card">
-            <h3>💪 Workout Log</h3>
-            <div class="input-group column-group">
-                <select id="workout-type">
-                    <option value="cardio">Cardio</option>
-                    <option value="strength">Strength Training</option>
-                </select>
-
-                <input type="text" id="workout-name" placeholder="Exercise Name (e.g. Running, Bench Press)">
-
-                <!-- Cardio Inputs -->
-                <div id="cardio-inputs" class="input-row">
-                    <input type="number" id="cardio-time" placeholder="Time (mins)">
-                    <input type="number" id="cardio-speed" placeholder="Speed (km/h)">
-                    <input type="number" id="cardio-incline" placeholder="Incline (%)">
-                </div>
-
-                <!-- Strength Inputs -->
-                <div id="strength-inputs" class="input-row hidden">
-                    <input type="number" id="strength-sets" placeholder="Sets" style="flex: 1; min-width: 60px;">
-                    <input type="number" id="strength-reps" placeholder="Reps" style="flex: 1; min-width: 60px;">
-                    <input type="number" id="strength-weight" placeholder="Weight (kg)"
-                        style="flex: 1; min-width: 80px;">
-                    <select id="strength-effort" style="flex: 1; min-width: 100px;">
-                        <option value="low">Low Effort</option>
-                        <option value="medium" selected>Medium Effort</option>
-                        <option value="high">High Effort</option>
-                        <option value="max">Max Effort</option>
-                    </select>
-                </div>
-
-                <button id="add-workout-btn">Add Workout</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3>💪 Workout Log</h3>
+                <button id="toggle-bulk-workout" class="small-btn">Switch to Bulk Mode</button>
             </div>
-            <ul class="log-list" id="workout-list"></ul>
+
+            <!-- Single Workout Mode -->
+            <div id="workout-single-container">
+                <div class="input-group column-group">
+                    <select id="workout-type">
+                        <option value="cardio">Cardio</option>
+                        <option value="strength">Strength</option>
+                    </select>
+                    <input type="text" id="workout-name" placeholder="Workout Name (e.g. Run, Bench Press)">
+
+                    <!-- Cardio Inputs -->
+                    <div id="cardio-inputs" class="input-row">
+                        <input type="number" id="cardio-time" placeholder="Time (mins)">
+                        <input type="number" id="cardio-speed" placeholder="Speed (km/h)">
+                        <input type="number" id="cardio-incline" placeholder="Incline (%)">
+                    </div>
+
+                    <!-- Strength Inputs -->
+                    <div id="strength-inputs" class="input-row hidden">
+                        <input type="number" id="strength-sets" placeholder="Sets" style="flex: 1; min-width: 60px;">
+                        <input type="number" id="strength-reps" placeholder="Reps" style="flex: 1; min-width: 60px;">
+                        <input type="number" id="strength-weight" placeholder="Weight (kg)"
+                            style="flex: 1; min-width: 80px;">
+                        <select id="strength-effort" style="flex: 1; min-width: 100px;">
+                            <option value="low">Low Effort</option>
+                            <option value="medium" selected>Medium Effort</option>
+                            <option value="high">High Effort</option>
+                            <option value="max">Max Effort</option>
+                        </select>
+                    </div>
+                    <button id="add-workout-btn" class="primary-btn" style="margin-top: 10px;">Add Workout</button>
+                </div>
+            </div>
+
+            <!-- Bulk Workout Mode -->
+            <div id="workout-bulk-container" class="hidden">
+                <div class="info-box">
+                    <p><strong>Bulk Mode Instructions:</strong></p>
+                    <p style="margin-bottom: 8px;">Each line: <code
+                            style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">WorkoutName: details</code>
+                    </p>
+                    <p style="font-size: 0.85rem; margin: 8px 0;"><strong>Format:</strong></p>
+                    <p style="font-size: 0.85rem; margin: 4px 0; padding-left: 10px;">• Cardio → <code
+                            style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">30 mins @ 10km/h, 2% incline</code>
+                    </p>
+                    <p style="font-size: 0.85rem; margin: 4px 0; padding-left: 10px;">• Strength → <code
+                            style="background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 3px;">3 sets x 10 reps @ 100kg (medium effort)</code>
+                    </p>
+
+                    <details style="margin-top: 10px; cursor: pointer;">
+                        <summary
+                            style="font-size: 0.85rem; font-weight: bold; color: var(--secondary); user-select: none;">
+                            📋 Click to show examples</summary>
+                        <div style="margin-top: 10px;">
+                            <p style="font-size: 0.85rem; margin-bottom: 5px;"><strong>Progressive Warm-up
+                                    (Cardio):</strong></p>
+                            <textarea readonly
+                                style="font-size: 0.8rem; height: 90px; margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid #444; resize: none; padding: 8px; width: 100%; box-sizing: border-box;">Run: 1 mins @ 5.8km/h, 5% incline
+Run: 1 mins @ 5.8km/h, 6% incline
+Run: 1 mins @ 5.8km/h, 7% incline
+Run: 1 mins @ 5.8km/h, 8% incline
+Run: 1 mins @ 5.8km/h, 9% incline</textarea>
+
+                            <p style="font-size: 0.85rem; margin-bottom: 5px;"><strong>Drop Sets (Strength):</strong>
+                            </p>
+                            <textarea readonly
+                                style="font-size: 0.8rem; height: 90px; background: rgba(0,0,0,0.3); border: 1px solid #444; resize: none; padding: 8px; width: 100%; box-sizing: border-box;">Seated Row: 1 sets x 10 reps @ 45kg (medium effort)
+Seated Row: 1 sets x 10 reps @ 40kg (medium effort)
+Seated Row: 1 sets x 10 reps @ 35kg (medium effort)
+Seated Row: 1 sets x 10 reps @ 30kg (medium effort)
+Seated Row: 1 sets x 10 reps @ 25kg (medium effort)</textarea>
+                        </div>
+                    </details>
+                </div>
+                <textarea id="workout-bulk-input" placeholder="Paste workouts here..."></textarea>
+                <button id="save-bulk-workout" class="primary-btn" style="margin-top: 10px; width: 100%;">Save Bulk
+                    Workouts</button>
+            </div>
+
+            <ul id="workout-list" class="log-list"></ul>
         </section>
 
         <!-- Motivation Station -->
@@ -149,8 +202,9 @@
             <h3>🚀 Motivation Station</h3>
             <p id="motivation-text">Keep pushing! You got this.</p>
         </section>
+
         <footer style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;">
-            <p>Fun Fitness Tracker &copy; 2025 - Version 1.0</p>
+            <p>Fun Fitness Tracker &copy; 2025 - Version 1.1</p>
         </footer>
     </div>
 
@@ -163,7 +217,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script_v1.1.js"></script>
 </body>
 
 </html>

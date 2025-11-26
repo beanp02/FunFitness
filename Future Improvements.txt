@@ -2,10 +2,20 @@ Issues-
 
 Enhancement-
 1. ability to edit all workouts on the day in text form
+2. Add time and date to the top right hand side
 
 Future
-1. Add login page
-2. Add user account page
-3. Add selection for user at top
+1. Add two new pages
+1.1 Administration
+1.2 Statistics
+2. Administration page
+2.1 Add user account page
+2.2 user account name & password
+2.3 Add login page at the start before the index
+2.4 ensure information is tracked separately for each user 
+3. Statistics page
+3.1 day and rating
+3.2 goals hit?
+
 4. Light and dark mode
 5. Export information to csv or txt
